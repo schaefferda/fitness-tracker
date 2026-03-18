@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log a Workout</title>
+</head>
+<body>
+    <h1>Log a New Workout Session</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <h3>Workout Details</h3>
+        {{ form.as_p }}
+
+        <hr>
+
+        <h3>Exercises & Sets</h3>
+        {{ formset.management_form }}
+
+        {% for set_form in formset %}
+            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                {{ set_form.as_p }}
+            </div>
+        {% endfor %}
+
+        <br>
+        <button type="submit">Save Session</button>
+    </form>
+
+    <br>
+    <a href="{% url 'workout_list' %}">Cancel and go back</a>
+
+</body>
+</html>

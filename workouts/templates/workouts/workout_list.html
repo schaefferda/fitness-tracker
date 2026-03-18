@@ -6,6 +6,8 @@
 </head>
 <body>
     <h1>Recent Workouts</h1>
+    <a href="{% url 'add_workout' %}"> + Log a New Workout</a>
+    <hr>
 
     {% if workouts %}
         <ul>

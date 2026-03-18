@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Workout
+from .forms import WorkoutForm, WorkoutSetFormSet
 
 
 def workout_list(request):
@@ -9,3 +10,37 @@ def workout_list(request):
     # Pass the workouts to an HTML template
     context = {'workouts': workouts}
     return render(request, 'workouts/workout_list.html', context)
+
+def add_workout(request):
+    # Check if the user is submitting data
+    if request.method == 'POST':
+        # Grab the data for both the main form and the formset
+        form = WorkoutForm(request.POST)
+        formset = WorkoutSetFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            # commit=False tells Django to prepare the save, but wait just a moment.
+            # Save the parent Workout first, but don't commit to DB yet.
+            workout = form.save(commit=False)
+            workout.user = request.user  # Attach the currently logged-in user to this workout
+            workout.save() # Now we can safely save the workout to the database
+
+            # Attach the new workout ot the formset, then save the formset
+            formset.instance = workout
+            formset.save()
+
+            # Redirect the user back to the homepage list
+            return redirect('workout_list')
+
+    else:
+        # If they aren't submitting data, just show any empty form
+        form = WorkoutForm()
+        formset = WorkoutSetFormSet()
+
+    # Pass both to the template
+    context = {
+        'form': form,
+        'formset': formset
+    }
+
+    return render(request, 'workouts/add_workout.html', context)
