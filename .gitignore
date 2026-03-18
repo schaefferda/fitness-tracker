@@ -1,0 +1,13 @@
+# Environments
+venv/
+.env
+
+# PyCharm specific
+.idea/
+
+# Python specific
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3
