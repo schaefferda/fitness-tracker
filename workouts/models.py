@@ -1,9 +1,26 @@
+__author__ = ['Daniel Schaeffer']
+__version__ = '0.1.0'
+__py_version__ = '3.12'
+__creation_date__ = '2026-03-18'
+
 from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
 class Exercise(models.Model):
+
+    MAJOR_MUSCLE_GROUPS = [
+        (0, 'Chest'),
+        (1, 'Back'),
+        (2, 'Shoulders'),
+        (3, 'Legs'),
+        (4, 'Arms'),
+        (5, 'Core'),
+    ]
+
     name = models.CharField(max_length=100)
+    major_muscle_group = models.PositiveSmallIntegerField(choices=MAJOR_MUSCLE_GROUPS, default=5)
+    secondary_muscles = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
