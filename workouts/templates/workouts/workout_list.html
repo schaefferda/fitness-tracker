@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Fitness Tracker</title>
+</head>
+<body>
+    <h1>Recent Workouts</h1>
+
+    {% if workouts %}
+        <ul>
+        {% for workout in workouts %}
+            <li>
+                <strong>{{ workout.date|date:"F j, Y" }}</strong> - Logged by {{ workout.user.username }}
+                <p>Notes: {{ workout.notes }}</p>
+
+                <ul>
+                {% for set in workout.sets.all %}
+                    <li>{{ set.exercise.name }}: {{ set.reps }} reps @ {{ set.weight }} lbs</li>
+                {% endfor %}
+                </ul>
+            </li>
+            <hr>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No workouts logged yet!</p>
+    {% endif %}
+
+</body>
+</html>
