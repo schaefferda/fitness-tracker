@@ -40,9 +40,8 @@
         const addBtn = document.getElementById('add-set-btn');
         const container = document.getElementById('formset-container');
 
-        // Django names this hidden input based on the child model.
-        // By default, it is 'childmodel_set-TOTAL_FORMS'.
-        const totalFormsInput = document.getElementById('id_workoutset_set-TOTAL_FORMS');
+        // FIX 1: Django uses your related_name 'sets' as the prefix!
+        const totalFormsInput = document.getElementById('id_sets-TOTAL_FORMS');
 
         addBtn.addEventListener('click', function(e) {
             e.preventDefault(); // Prevent any default button behavior
@@ -53,15 +52,14 @@
 
             // 3. Clone the very last form in the list
             const lastForm = currentForms[formCount - 1];
-            const newForm = lastForm.cloneNode(true); // true means copy all the HTML inside it too
+            const newForm = lastForm.cloneNode(true); // true means copy all the HTML
 
             // 4. Update the IDs and Names in the cloned form
-            // Django expects the first form to be index 0, the second to be 1, etc.
-            // We use a regular expression to replace the old index with the new index.
-            const formRegex = new RegExp(`workoutset_set-(\\d+)-`, 'g');
-            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `workoutset_set-${formCount}-`);
+            // FIX 2: Look for the 'sets' prefix instead of 'workoutset_set'
+            const formRegex = new RegExp(`sets-(\\d+)-`, 'g');
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `sets-${formCount}-`);
 
-            // 5. Clear out any data the user might have already typed into the cloned form
+            // 5. Clear out any data the user might have already typed
             const inputs = newForm.querySelectorAll('input, select');
             inputs.forEach(input => {
                 if (input.type !== 'hidden' && input.type !== 'checkbox') {
