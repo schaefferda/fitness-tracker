@@ -5,9 +5,11 @@ from .models import Workout, WorkoutSet
 class WorkoutForm(forms.ModelForm):
     class Meta:
         model = Workout
-        # We only want the user to fill out the notes.
-        # Django automatically handles the 'date', and we will handle the 'user' in the view
-        fields = ['notes']
+        fields = ['date', 'notes']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
 
 # This creates a group of forms for the WorkoutSet model, tied to a specific Workout.
 WorkoutSetFormSet = inlineformset_factory(

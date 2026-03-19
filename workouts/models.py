@@ -5,6 +5,7 @@ __creation_date__ = '2026-03-18'
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Exercise(models.Model):
@@ -27,10 +28,12 @@ class Exercise(models.Model):
         return self.name
 
 class Workout(models.Model):
-    # Links this workout to a built-in Django User.
-    # CASCADE means if te user is deleted, their workouts are deleted, too.
+    """
+    Represents a single workout session for a specific user.
+    Tracks the date of the workout and includes optional notes.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
     notes = models.TextField(blank=True, help_text="How did you feel during this workout?")
 
     def __str__(self):
