@@ -71,3 +71,17 @@ def edit_workout(request, pk):
     }
     # We can cleverly reuse our exact same HTML template!
     return render(request, 'workouts/add_workout.html', context)
+
+def delete_workout(request, pk):
+    # Grab the workout, ensuring it belongs to the user for security
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        # If they confirm via the POST form, delete the workout
+        workout.delete()
+        # The cascade rule we set in models.py means all related sets are automatically deleted too!
+        return redirect('workout_list')
+
+    # If they just navigated to the page, show them the confirmation template
+    context = {'workout': workout}
+    return render(request, 'workouts/confirm_delete.html', context)

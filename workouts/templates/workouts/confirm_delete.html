@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Workout</title>
+</head>
+<body>
+    <h1>Delete Workout</h1>
+
+    <p>Are you sure you want to delete your workout from <strong>{{ workout.date|date:"F j, Y" }}</strong>?</p>
+    <p style="color: red;">Warning: This will also permanently delete all exercises and sets attached to this session. This cannot be undone.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete Workout</button>
+    </form>
+
+    <br>
+    <a href="{% url 'workout_list' %}">Cancel and go back</a>
+
+</body>
+</html>
