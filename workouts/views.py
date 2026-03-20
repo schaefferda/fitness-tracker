@@ -2,6 +2,7 @@ import json
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Workout
 from .forms import WorkoutForm, WorkoutSetFormSet
@@ -10,10 +11,21 @@ from .forms import WorkoutForm, WorkoutSetFormSet
 @login_required
 def workout_list(request):
     # Fetch all workouts from the database, ordered by newest first
-    workouts = Workout.objects.filter(user=request.user).order_by('-date')
+    all_workouts = Workout.objects.filter(user=request.user).order_by('-date')
 
-    # Pass the workouts to an HTML template
-    context = {'workouts': workouts}
+    # Tell Paginator to split up workouts, showing 5 per page
+    paginator = Paginator(all_workouts, 1)
+
+    # Look at URL to see what page number a user clicked (e.g., ?page=2)
+    # If there is no page number in the URL it defaults to None
+    page_number = request.GET.get('page')
+
+    # Get the specific page of workouts
+    # If page_number is None, get_page automatically returns page 1
+    page_obj = paginator.get_page(page_number)
+
+    # Pass the specific page object to the HTML template instead of all_workouts
+    context = {'workouts': page_obj}
     return render(request, 'workouts/workout_list.html', context)
 
 

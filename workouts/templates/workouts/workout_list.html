@@ -34,6 +34,36 @@
                     </div>
                 </div>
             {% endfor %}
+
+            <nav aria-label="Workout pagination" class="mt-5 mb-5">
+                <ul class="pagination justify-content-center">
+
+                    {% if workouts.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ workouts.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link bg-light">
+                            Page {{ workouts.number }} of {{ workouts.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if workouts.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ workouts.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ workouts.paginator.num_pages }}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
         {% else %}
             <div class="alert alert-info text-center" role="alert">
                 No workouts logged yet! Time to hit the gym.
