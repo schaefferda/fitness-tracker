@@ -10,27 +10,24 @@
 
         {% if workouts %}
             {% for workout in workouts %}
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <strong>{{ workout.date|date:"F j, Y" }}</strong>
-                        <div>
-                            <a href="{% url 'edit_workout' workout.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                            <a href="{% url 'delete_workout' workout.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                        </div>
-                    </div>
+                <div class="card mb-4 shadow-sm border-0 bg-white">
                     <div class="card-body">
-                        {% if workout.notes %}
-                            <p class="text-muted"><em>"{{ workout.notes }}"</em></p>
-                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0">{{ workout.date|date:"l, F j, Y" }}</h5>
+                            <a href="{% url 'workout_detail' workout.id %}" class="btn btn-sm btn-primary">View Details &rarr;</a>
+                        </div>
 
-                        <ul class="list-group list-group-flush">
-                            {% for set in workout.sets.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ set.exercise.name }}
-                                    <span class="badge bg-secondary rounded-pill">{{ set.reps }} reps @ {{ set.weight|floatformat:0 }} lbs</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        <div class="d-flex gap-3 text-muted small mb-3">
+                            <span><i class="bi bi-activity"></i> {{ workout.total_exercises }} Exercises</span>
+                            <span>|</span>
+                            <span><i class="bi bi-lightning-charge"></i> {{ workout.total_volume|floatformat:0 }} lbs Volume</span>
+                        </div>
+
+                        {% if workout.notes %}
+                            <p class="card-text text-truncate text-muted" style="max-width: 100%;">
+                                <em>"{{ workout.notes }}"</em>
+                            </p>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

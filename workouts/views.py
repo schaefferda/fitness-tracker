@@ -14,7 +14,7 @@ def workout_list(request):
     all_workouts = Workout.objects.filter(user=request.user).order_by('-date')
 
     # Tell Paginator to split up workouts, showing 5 per page
-    paginator = Paginator(all_workouts, 1)
+    paginator = Paginator(all_workouts, 10)
 
     # Look at URL to see what page number a user clicked (e.g., ?page=2)
     # If there is no page number in the URL it defaults to None
@@ -174,3 +174,11 @@ def add_exercise(request):
         form = ExerciseForm()
 
     return render(request, 'workouts/add_exercise.html', {'form': form})
+
+
+@login_required
+def workout_detail(request, pk):
+    # Grab the specific workout, ensuring it belongs to the logged-in user
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+
+    return render(request, 'workouts/workout_detail.html', {'workout': workout})

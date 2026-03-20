@@ -42,6 +42,16 @@ class Workout(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.date.strftime('%Y-%m-%d')}"
 
+    @property
+    def total_volume(self):
+        # Calculate the total weight lifted in this specific workout
+        return sum(set.reps * set.weight for set in self.sets.all())
+
+    @property
+    def total_exercises(self):
+        # Counts how many unique exercises were performed
+        return self.sets.values('exercise').distinct().count()
+
 class WorkoutSet(models.Model):
     # Links this set to a specific workout and exercise
     workout = models.ForeignKey(Workout, related_name='sets', on_delete=models.CASCADE)

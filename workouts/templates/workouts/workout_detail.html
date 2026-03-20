@@ -1,0 +1,56 @@
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workout_list' %}">All Workouts</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ workout.date|date:"F j, Y" }}</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h3 class="h5 mb-0">Workout Session: {{ workout.date|date:"F j, Y" }}</h3>
+                <div>
+                    <a href="{% url 'edit_workout' workout.id %}" class="btn btn-sm btn-outline-light me-2">Edit</a>
+                    <a href="{% url 'delete_workout' workout.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row text-center mb-4 border-bottom pb-3">
+                    <div class="col">
+                        <h6 class="text-muted text-uppercase mb-1">Total Volume</h6>
+                        <h4 class="mb-0">{{ workout.total_volume|floatformat:0 }} lbs</h4>
+                    </div>
+                    <div class="col">
+                        <h6 class="text-muted text-uppercase mb-1">Exercises</h6>
+                        <h4 class="mb-0">{{ workout.total_exercises }}</h4>
+                    </div>
+                </div>
+
+                {% if workout.notes %}
+                    <div class="mb-4">
+                        <h6 class="text-muted border-bottom pb-2">Session Notes</h6>
+                        <p class="fst-italic">"{{ workout.notes }}"</p>
+                    </div>
+                {% endif %}
+
+                <h6 class="text-muted border-bottom pb-2 mb-3">Sets & Reps</h6>
+                <ul class="list-group list-group-flush">
+                    {% for set in workout.sets.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <strong>{{ set.exercise.name }}</strong>
+                            <span class="badge bg-primary rounded-pill fs-6">{{ set.reps }} reps @ {{ set.weight|floatformat:0 }} lbs</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
