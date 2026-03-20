@@ -49,7 +49,7 @@ class WorkoutSet(models.Model):
 
     # The actual data for the set
     reps = models.PositiveIntegerField()
-    weight = models.DecimalField(max_digits=5, decimal_places=2, help_text="Weight in lbs")
+    weight = models.DecimalField(max_digits=4, decimal_places=1, help_text="Weight in lbs")
 
     def __str__(self):
         return f"{self.exercise.name}:  {self.reps} reps @ {self.weight} lbs"

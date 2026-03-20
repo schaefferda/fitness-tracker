@@ -27,7 +27,7 @@
                             {% for set in workout.sets.all %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{ set.exercise.name }}
-                                    <span class="badge bg-secondary rounded-pill">{{ set.reps }} reps @ {{ set.weight }} lbs</span>
+                                    <span class="badge bg-secondary rounded-pill">{{ set.reps }} reps @ {{ set.weight|floatformat:0 }} lbs</span>
                                 </li>
                             {% endfor %}
                         </ul>
