@@ -14,6 +14,7 @@
         {% for workout in workouts %}
             <li>
                 <strong>{{ workout.date|date:"F j, Y" }}</strong> - Logged by {{ workout.user.username }}
+                <a href="{% url 'edit_workout' workout.id %}">[Edit Workout]</a>
                 <p>Notes: {{ workout.notes }}</p>
 
                 <ul>

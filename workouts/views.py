@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Workout
 from .forms import WorkoutForm, WorkoutSetFormSet
 
@@ -43,4 +43,31 @@ def add_workout(request):
         'formset': formset
     }
 
+    return render(request, 'workouts/add_workout.html', context)
+
+def edit_workout(request, pk):
+    # Grab the specific workout using its Primary Key (pk),
+    # and ensure it belongs to the currently logged-in user for security!
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        # Pass the existing 'instance' so Django knows we are updating, not creating new
+        form = WorkoutForm(request.POST, instance=workout)
+        formset = WorkoutSetFormSet(request.POST, instance=workout)
+
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('workout_list')
+    else:
+        # If GET request, pre-fill the forms with the existing workout data
+        form = WorkoutForm(instance=workout)
+        formset = WorkoutSetFormSet(instance=workout)
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'is_edit': True  # A little flag so our HTML knows we are editing
+    }
+    # We can cleverly reuse our exact same HTML template!
     return render(request, 'workouts/add_workout.html', context)

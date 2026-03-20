@@ -5,7 +5,11 @@
     <title>Log a Workout</title>
 </head>
 <body>
-    <h1>Log a New Workout Session</h1>
+    {% if is_edit %}
+        <h1>Edit Workout Session</h1>
+    {% else %}
+        <h1>Log a New Workout Session</h1>
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}
