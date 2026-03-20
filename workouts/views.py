@@ -1,16 +1,22 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Workout
 from .forms import WorkoutForm, WorkoutSetFormSet
 
 
+@login_required
 def workout_list(request):
     # Fetch all workouts from the database, ordered by newest first
-    workouts = Workout.objects.all().order_by('-date')
+    workouts = Workout.objects.filter(user=request.user).order_by('-date')
 
     # Pass the workouts to an HTML template
     context = {'workouts': workouts}
     return render(request, 'workouts/workout_list.html', context)
 
+
+@login_required
 def add_workout(request):
     # Check if the user is submitting data
     if request.method == 'POST':
@@ -45,6 +51,8 @@ def add_workout(request):
 
     return render(request, 'workouts/add_workout.html', context)
 
+
+@login_required
 def edit_workout(request, pk):
     # Grab the specific workout using its Primary Key (pk),
     # and ensure it belongs to the currently logged-in user for security!
@@ -72,6 +80,8 @@ def edit_workout(request, pk):
     # We can cleverly reuse our exact same HTML template!
     return render(request, 'workouts/add_workout.html', context)
 
+
+@login_required
 def delete_workout(request, pk):
     # Grab the workout, ensuring it belongs to the user for security
     workout = get_object_or_404(Workout, pk=pk, user=request.user)
@@ -85,3 +95,19 @@ def delete_workout(request, pk):
     # If they just navigated to the page, show them the confirmation template
     context = {'workout': workout}
     return render(request, 'workouts/confirm_delete.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            # Save the new user to the database
+            user = form.save()
+            # Automatically log the user in right after they register
+            login(request, user)
+            return redirect('workout_list')
+    else:
+        # If they just visit the page, show an empty form
+        form = UserCreationForm()
+
+    return render(request, 'workouts/register.html', {'form': form})
