@@ -1,0 +1,56 @@
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <h2 class="mb-4">My Progress Dashboard</h2>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Total Volume Lifted (Last 10 Workouts)</h5>
+
+                <canvas id="volumeChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Grab the canvas element from the HTML above
+    const ctx = document.getElementById('volumeChart').getContext('2d');
+
+    // Securely load the JSON data we passed from our Django view.
+    // The '|safe' filter tells Django not to escape the characters, allowing JS to read it.
+    const chartDates = JSON.parse('{{ dates|safe }}');
+    const chartVolumes = JSON.parse('{{ volumes|safe }}');
+
+    // Create the chart!
+    new Chart(ctx, {
+        type: 'line', // You can change this to 'bar' if you prefer!
+        data: {
+            labels: chartDates, // The X-axis
+            datasets: [{
+                label: 'Total Volume (lbs)',
+                data: chartVolumes, // The Y-axis
+                borderColor: 'rgba(13, 110, 253, 1)', // Bootstrap Primary Blue
+                backgroundColor: 'rgba(13, 110, 253, 0.2)', // Light blue fill
+                borderWidth: 2,
+                fill: true, // Fills the area under the line
+                tension: 0.3 // Gives the line a nice, smooth curve
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -20,7 +20,7 @@ class Exercise(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    major_muscle_group = models.PositiveSmallIntegerField(choices=MAJOR_MUSCLE_GROUPS, default=5)
+    major_muscle_group = models.CharField(choices=MAJOR_MUSCLE_GROUPS, default='Core')
     secondary_muscles = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
 

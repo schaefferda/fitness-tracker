@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -111,3 +112,31 @@ def register(request):
         form = UserCreationForm()
 
     return render(request, 'workouts/register.html', {'form': form})
+
+
+@login_required
+def dashboard(request):
+    # Grab the user's workouts, ordered by oldest to newest so the chart flows left to right.
+    # We will slice [:10] to only get the last 10 workouts to keep the chart clean.
+    workouts = Workout.objects.filter(user=request.user).order_by('date')[:10]
+
+    dates = []
+    volumes = []
+
+    for workout in workouts:
+        # Format the date nicely (e.g., 'Oct 15')
+        dates.append(workout.date.strftime('%b %d'))
+
+        # Calculate the total volume for this specific workout
+        total_volume = sum(set.reps * set.weight for set in workout.sets.all())
+        # We convert it to a float because sometimes Decimal fields confuse JavaScript
+        volumes.append(float(total_volume))
+
+    # We must use json.dumps() so the Python lists are safely converted into
+    # a format that JavaScript can easily read in our HTML template.
+    context = {
+        'dates': json.dumps(dates),
+        'volumes': json.dumps(volumes),
+    }
+
+    return render(request, 'workouts/dashboard.html', context)
