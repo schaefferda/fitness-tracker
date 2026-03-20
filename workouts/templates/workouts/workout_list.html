@@ -1,53 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Fitness Tracker</title>
-</head>
-<body>
-    <div style="background-color: #f4f4f4; padding: 10px; margin-bottom: 20px;">
-        {% if user.is_authenticated %}
-            <span>Welcome, <strong>{{ user.username }}</strong>!</span> |
+{% extends 'workouts/base.html' %}
 
-            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; padding: 0;">Log Out</button>
-            </form>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Recent Workouts</h2>
+            <a href="{% url 'add_workout' %}" class="btn btn-primary">Log New Session</a>
+        </div>
 
+        {% if workouts %}
+            {% for workout in workouts %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>{{ workout.date|date:"F j, Y" }}</strong>
+                        <div>
+                            <a href="{% url 'edit_workout' workout.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'delete_workout' workout.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if workout.notes %}
+                            <p class="text-muted"><em>"{{ workout.notes }}"</em></p>
+                        {% endif %}
+
+                        <ul class="list-group list-group-flush">
+                            {% for set in workout.sets.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ set.exercise.name }}
+                                    <span class="badge bg-secondary rounded-pill">{{ set.reps }} reps @ {{ set.weight }} lbs</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
         {% else %}
-            <span>You are not logged in.</span> |
-            <a href="{% url 'login' %}">Log In</a> |
-            <a href="{% url 'register' %}">Register</a>
+            <div class="alert alert-info text-center" role="alert">
+                No workouts logged yet! Time to hit the gym.
+            </div>
         {% endif %}
     </div>
-
-    <h1>Recent Workouts</h1>
-    <a href="{% url 'add_workout' %}"> + Log a New Workout</a>
-    <hr>
-
-    {% if workouts %}
-        <ul>
-        {% for workout in workouts %}
-            <li>
-                <strong>{{ workout.date|date:"F j, Y" }}</strong> - Logged by {{ workout.user.username }}
-
-                <a href="{% url 'edit_workout' workout.id %}">[Edit Workout]</a>
-                <a href="{% url 'delete_workout' workout.id %}">[Delete Workout]</a>
-
-                <p>Notes: {{ workout.notes }}</p>
-
-                <ul>
-                {% for set in workout.sets.all %}
-                    <li>{{ set.exercise.name }}: {{ set.reps }} reps @ {{ set.weight }} lbs</li>
-                {% endfor %}
-                </ul>
-            </li>
-            <hr>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No workouts logged yet!</p>
-    {% endif %}
-
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,82 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Log a Workout</title>
-</head>
-<body>
-    {% if is_edit %}
-        <h1>Edit Workout Session</h1>
-    {% else %}
-        <h1>Log a New Workout Session</h1>
-    {% endif %}
+{% extends 'workouts/base.html' %}
 
-    <form method="POST">
-        {% csrf_token %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-5">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    {% if is_edit %}Edit Workout Session{% else %}Log a New Workout Session{% endif %}
+                </h2>
 
-        <h3>Workout Details</h3>
-        {{ form.as_p }}
+                <form method="POST">
+                    {% csrf_token %}
 
-        <hr>
+                    <h5 class="text-primary border-bottom pb-2 mb-3">Session Details</h5>
+                    {{ form.as_p }}
 
-        <h3>Exercises & Sets</h3>
-        {{ formset.management_form }}
+                    <h5 class="text-primary border-bottom pb-2 mb-3 mt-4">Exercises & Sets</h5>
+                    {{ formset.management_form }}
 
-        <div id="formset-container">
-            {% for set_form in formset %}
-                <div class="set-form" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                    {{ set_form.as_p }}
-                </div>
-            {% endfor %}
+                    <div id="formset-container">
+                        {% for set_form in formset %}
+                            <div class="set-form bg-light p-3 border rounded mb-3">
+                                {{ set_form.as_p }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="button" id="add-set-btn" class="btn btn-outline-success btn-sm mb-4">+ Add Another Set</button>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Save Session</button>
+                        <a href="{% url 'workout_list' %}" class="btn btn-link text-muted">Cancel and go back</a>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
+</div>
+{% endblock %}
 
-        <button type="button" id="add-set-btn">+ Add another set</button>
+{% block scripts %}
+<script>
+    const addBtn = document.getElementById('add-set-btn');
+    const container = document.getElementById('formset-container');
+    const totalFormsInput = document.getElementById('id_sets-TOTAL_FORMS');
 
-        <br><br>
-        <button type="submit">Save Session</button>
-    </form>
+    addBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentForms = document.querySelectorAll('.set-form');
+        const formCount = currentForms.length;
 
-    <br>
-    <a href="{% url 'workout_list' %}">Cancel and go back</a>
+        const lastForm = currentForms[formCount - 1];
+        const newForm = lastForm.cloneNode(true);
 
-    <script>
-        // 1. Grab the button, the container, and the hidden total-forms input
-        const addBtn = document.getElementById('add-set-btn');
-        const container = document.getElementById('formset-container');
+        const formRegex = new RegExp(`sets-(\\d+)-`, 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `sets-${formCount}-`);
 
-        // FIX 1: Django uses your related_name 'sets' as the prefix!
-        const totalFormsInput = document.getElementById('id_sets-TOTAL_FORMS');
-
-        addBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // Prevent any default button behavior
-
-            // 2. Find all current forms on the page
-            const currentForms = document.querySelectorAll('.set-form');
-            const formCount = currentForms.length; // How many forms are currently there?
-
-            // 3. Clone the very last form in the list
-            const lastForm = currentForms[formCount - 1];
-            const newForm = lastForm.cloneNode(true); // true means copy all the HTML
-
-            // 4. Update the IDs and Names in the cloned form
-            // FIX 2: Look for the 'sets' prefix instead of 'workoutset_set'
-            const formRegex = new RegExp(`sets-(\\d+)-`, 'g');
-            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `sets-${formCount}-`);
-
-            // 5. Clear out any data the user might have already typed
-            const inputs = newForm.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                if (input.type !== 'hidden' && input.type !== 'checkbox') {
-                    input.value = ''; // Wipe text/number inputs
-                }
-            });
-
-            // 6. Add the fresh form to the page
-            container.appendChild(newForm);
-
-            // 7. Tell Django's management form that we added a new form!
-            totalFormsInput.value = formCount + 1;
+        const inputs = newForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type !== 'hidden' && input.type !== 'checkbox') {
+                input.value = '';
+            }
         });
-    </script>
-</body>
-</html>
+
+        container.appendChild(newForm);
+        totalFormsInput.value = formCount + 1;
+    });
+</script>
+{% endblock %}

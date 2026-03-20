@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register for Fitness Tracker</title>
-</head>
-<body>
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="card">
     <h1>Create an Account</h1>
 
     <form method="POST">
@@ -16,6 +13,5 @@
 
     <br>
     <p>Already have an account? <a href="{% url 'login' %}">Log in here.</a></p>
-
-</body>
-</html>
+</div>
+{% endblock %}

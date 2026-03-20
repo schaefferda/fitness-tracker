@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Log In</title>
-</head>
-<body>
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="card">
     <h1>Welcome Back!</h1>
 
     <form method="POST">
@@ -16,6 +13,5 @@
 
     <br>
     <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
-
-</body>
-</html>
+</div>
+{% endblock %}

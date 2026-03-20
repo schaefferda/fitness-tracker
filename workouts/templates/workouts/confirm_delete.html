@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Delete Workout</title>
-</head>
-<body>
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="card">
     <h1>Delete Workout</h1>
 
     <p>Are you sure you want to delete your workout from <strong>{{ workout.date|date:"F j, Y" }}</strong>?</p>
@@ -17,6 +14,5 @@
 
     <br>
     <a href="{% url 'workout_list' %}">Cancel and go back</a>
-
-</body>
-</html>
+</div>
+{% endblock %}
