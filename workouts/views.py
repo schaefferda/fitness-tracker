@@ -35,7 +35,7 @@ def add_workout(request):
     if request.method == 'POST':
         # Grab the data for both the main form and the formset
         form = WorkoutForm(request.POST)
-        formset = WorkoutSetFormSet(request.POST)
+        formset = WorkoutSetFormSet(request.POST, form_kwargs={'user': request.user})
 
         if form.is_valid() and formset.is_valid():
             # commit=False tells Django to prepare the save, but wait just a moment.
@@ -54,7 +54,7 @@ def add_workout(request):
     else:
         # If they aren't submitting data, just show any empty form
         form = WorkoutForm()
-        formset = WorkoutSetFormSet()
+        formset = WorkoutSetFormSet(form_kwargs={'user': request.user})
 
     # Pass both to the template
     context = {
@@ -74,7 +74,7 @@ def edit_workout(request, pk):
     if request.method == 'POST':
         # Pass the existing 'instance' so Django knows we are updating, not creating new
         form = WorkoutForm(request.POST, instance=workout)
-        formset = WorkoutSetFormSet(request.POST, instance=workout)
+        formset = WorkoutSetFormSet(request.POST, instance=workout, form_kwargs={'user': request.user})
 
         if form.is_valid() and formset.is_valid():
             form.save()
@@ -83,7 +83,7 @@ def edit_workout(request, pk):
     else:
         # If GET request, pre-fill the forms with the existing workout data
         form = WorkoutForm(instance=workout)
-        formset = WorkoutSetFormSet(instance=workout)
+        formset = WorkoutSetFormSet(instance=workout, form_kwargs={'user': request.user})
 
     context = {
         'form': form,
