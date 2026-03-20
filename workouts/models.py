@@ -11,12 +11,12 @@ from django.utils import timezone
 class Exercise(models.Model):
 
     MAJOR_MUSCLE_GROUPS = [
-        (0, 'Chest'),
-        (1, 'Back'),
-        (2, 'Shoulders'),
-        (3, 'Legs'),
-        (4, 'Arms'),
-        (5, 'Core'),
+        ('Chest', 'Chest'),
+        ('Back', 'Back'),
+        ('Shoulders', 'Shoulders'),
+        ('Legs', 'Legs'),
+        ('Arms', 'Arms'),
+        ('Core', 'Core'),
     ]
 
     name = models.CharField(max_length=100)
