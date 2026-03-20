@@ -5,6 +5,22 @@
     <title>My Fitness Tracker</title>
 </head>
 <body>
+    <div style="background-color: #f4f4f4; padding: 10px; margin-bottom: 20px;">
+        {% if user.is_authenticated %}
+            <span>Welcome, <strong>{{ user.username }}</strong>!</span> |
+
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; padding: 0;">Log Out</button>
+            </form>
+
+        {% else %}
+            <span>You are not logged in.</span> |
+            <a href="{% url 'login' %}">Log In</a> |
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+
     <h1>Recent Workouts</h1>
     <a href="{% url 'add_workout' %}"> + Log a New Workout</a>
     <hr>
