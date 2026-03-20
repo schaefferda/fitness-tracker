@@ -1,4 +1,5 @@
 {% extends 'workouts/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -13,7 +14,7 @@
                     {% csrf_token %}
 
                     <h5 class="text-primary border-bottom pb-2 mb-3">Session Details</h5>
-                    {{ form.as_p }}
+                    {{ form|crispy }}
 
                     <h5 class="text-primary border-bottom pb-2 mb-3 mt-4">Exercises & Sets</h5>
                     {{ formset.management_form }}
@@ -21,7 +22,7 @@
                     <div id="formset-container">
                         {% for set_form in formset %}
                             <div class="set-form bg-light p-3 border rounded mb-3">
-                                {{ set_form.as_p }}
+                                {{ set_form|crispy }}
                             </div>
                         {% endfor %}
                     </div>
