@@ -27,5 +27,5 @@ To run this project on your local machine, follow these steps:
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/YourUsername/fitness-tracker.git](https://github.com/YourUsername/fitness-tracker.git)
+git clone [https://github.com/schaefferda/fitness-tracker.git](https://github.com/schaefferda/fitness-tracker.git)
 cd fitness-tracker
