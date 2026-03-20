@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Workout
-from .forms import WorkoutForm, WorkoutSetFormSet
+from .forms import ExerciseForm, WorkoutForm, WorkoutSetFormSet
 
 
 @login_required
@@ -152,3 +152,25 @@ def dashboard(request):
     }
 
     return render(request, 'workouts/dashboard.html', context)
+
+
+@login_required
+def add_exercise(request):
+    if request.method == 'POST':
+        form = ExerciseForm(request.POST)
+        if form.is_valid():
+            # Pause the save
+            exercise = form.save(commit=False)
+
+            # Attach the user! Because we do this, it becomes a "Custom" exercise.
+            exercise.user = request.user
+
+            # Save it to the database
+            exercise.save()
+
+            # Send them right back to the workout logging page
+            return redirect('add_workout')
+    else:
+        form = ExerciseForm()
+
+    return render(request, 'workouts/add_exercise.html', {'form': form})

@@ -1,0 +1,28 @@
+{% extends 'workouts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Create Custom Exercise</h2>
+
+                <p class="text-muted text-center mb-4">
+                    Don't see your favorite movement? Add it here. Custom exercises are private and only visible to you.
+                </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Save Exercise</button>
+                        <a href="{% url 'add_workout' %}" class="btn btn-link text-muted">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

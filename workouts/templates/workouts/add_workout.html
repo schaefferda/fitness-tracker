@@ -16,7 +16,10 @@
                     <h5 class="text-primary border-bottom pb-2 mb-3">Session Details</h5>
                     {{ form|crispy }}
 
-                    <h5 class="text-primary border-bottom pb-2 mb-3 mt-4">Exercises & Sets</h5>
+                    <div class="d-flex justify-content-between align-items-end border-bottom pb-2 mb-3 mt-4">
+                        <h5 class="text-primary mb-0">Exercises & Sets</h5>
+                        <a href="{% url 'add_exercise' %}" class="btn btn-sm btn-outline-secondary">Create custom exercise</a>
+                    </div>
                     {{ formset.management_form }}
 
                     <div id="formset-container">
