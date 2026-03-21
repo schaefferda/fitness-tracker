@@ -1,34 +1,34 @@
 import json
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Workout, Exercise
+from .models import WorkoutSession, Exercise
 from .forms import WorkoutForm, WorkoutSetFormSet, ExerciseForm
 
 
 class WorkoutListView(LoginRequiredMixin, ListView):
-    model = Workout
+    model = WorkoutSession
     template_name = 'workouts/workout_list.html'
     context_object_name = 'workouts'
     paginate_by = 5  # CBVs handle pagination automatically!
 
     def get_queryset(self):
         # Security check: you can only view details of your own workouts
-        return Workout.objects.filter(user=self.request.user).order_by('-date')
+        return WorkoutSession.objects.filter(user=self.request.user).order_by('-date')
 
 
 class WorkoutDetailView(LoginRequiredMixin, DetailView):
-    model = Workout
+    model = WorkoutSession
     template_name = 'workouts/workout_detail.html'
     context_object_name = 'workout'
 
     def get_queryset(self):
-        return Workout.objects.filter(user=self.request.user)
+        return WorkoutSession.objects.filter(user=self.request.user)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -37,7 +37,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         # Override this method to pass our Chart.js data to the template
         context = super().get_context_data(**kwargs)
-        workouts = Workout.objects.filter(user=self.request.user).order_by('date')[:10]
+        workouts = WorkoutSession.objects.filter(user=self.request.user).order_by('date')[:10]
 
         dates = [w.date.strftime('%b %d') for w in workouts]
         volumes = [float(w.total_volume) for w in workouts]
@@ -48,12 +48,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 
 class WorkoutDeleteView(LoginRequiredMixin, DeleteView):
-    model = Workout
+    model = WorkoutSession
     template_name = 'workouts/confirm_delete.html'
     success_url = reverse_lazy('workout_list')
 
     def get_queryset(self):
-        return Workout.objects.filter(user=self.request.user)
+        return WorkoutSession.objects.filter(user=self.request.user)
 
 
 class ExerciseCreateView(LoginRequiredMixin, CreateView):
@@ -69,7 +69,7 @@ class ExerciseCreateView(LoginRequiredMixin, CreateView):
 
 
 class WorkoutCreateView(LoginRequiredMixin, CreateView):
-    model = Workout
+    model = WorkoutSession
     form_class = WorkoutForm
     template_name = 'workouts/add_workout.html'
     success_url = reverse_lazy('workout_list')
@@ -96,13 +96,13 @@ class WorkoutCreateView(LoginRequiredMixin, CreateView):
 
 
 class WorkoutUpdateView(LoginRequiredMixin, UpdateView):
-    model = Workout
+    model = WorkoutSession
     form_class = WorkoutForm
     template_name = 'workouts/add_workout.html'
     success_url = reverse_lazy('workout_list')
 
     def get_queryset(self):
-        return Workout.objects.filter(user=self.request.user)
+        return WorkoutSession.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

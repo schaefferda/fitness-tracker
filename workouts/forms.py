@@ -1,11 +1,11 @@
 from django import forms
 from django.db.models import Q
 from django.forms import inlineformset_factory
-from .models import Exercise, Workout, WorkoutSet
+from .models import Exercise, WorkoutSession, WorkoutSet
 
 class WorkoutForm(forms.ModelForm):
     class Meta:
-        model = Workout
+        model = WorkoutSession
         fields = ['date', 'notes']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
@@ -45,10 +45,10 @@ class WorkoutSetForm(forms.ModelForm):
 # This creates a group of forms for the WorkoutSet model, tied to a specific Workout.
 # UPDATE: Tell the factory to use our new WorkoutSetForm
 WorkoutSetFormSet = inlineformset_factory(
-    Workout,          # Parent model
-    WorkoutSet,       # Child model
+    WorkoutSession,     # Parent model
+    WorkoutSet,         # Child model
     form=WorkoutSetForm,
     # fields=('exercise', 'reps', 'weight'), # Fields for the user to fill out
-    extra=3,          # Number of empty rows to show by default
-    can_delete=False  # We will keep it simple for now!
+    extra=3,            # Number of empty rows to show by default
+    can_delete=False    # We will keep it simple for now!
 )
