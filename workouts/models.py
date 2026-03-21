@@ -78,6 +78,7 @@ class WorkoutSession(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
+    session_duration = models.DurationField(null=True, blank=True, help_text="Duration of the workout session")
     notes = models.TextField(blank=True, help_text="How did you feel during this workout?")
 
     def __str__(self):
