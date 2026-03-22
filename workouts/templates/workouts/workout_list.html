@@ -21,6 +21,11 @@
                             <span><i class="bi bi-activity"></i> {{ workout.total_exercises }} Exercises</span>
                             <span>|</span>
                             <span><i class="bi bi-lightning-charge"></i> {{ workout.total_volume|floatformat:0 }} lbs Volume</span>
+
+                            {% if workout.session_duration %}
+                                <span>|</span>
+                                <span><i class="bi bi-stopwatch"></i> {{ workout.session_duration }}</span>
+                            {% endif %}
                         </div>
 
                         {% if workout.notes %}
