@@ -40,14 +40,55 @@
                 {% endif %}
 
                 <h6 class="text-muted border-bottom pb-2 mb-3">Sets & Reps</h6>
-                <ul class="list-group list-group-flush">
-                    {% for set in workout.sets.all %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <strong>{{ set.exercise.name }}</strong>
-                            <span class="badge bg-primary rounded-pill fs-6">{{ set.reps }} reps @ {{ set.weight|floatformat:0 }} lbs</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead class="table-light text-muted small text-uppercase">
+                            <tr>
+                                <th>Exercise</th>
+                                <th>Details</th>
+                                <th class="text-center">Reps (Act / Tgt)</th>
+                                <th class="text-center">Weight (Act / Tgt)</th>
+                                <th class="text-center">Distance / Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for set in workout.sets.all %}
+                                <tr>
+                                    <td class="fw-bold">{{ set.exercise.name }}</td>
+
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            {% if set.equipment %}<span class="badge bg-secondary text-light" style="font-size: 0.7em;">{{ set.equipment }}</span>{% endif %}
+                                            {% if set.positioning %}<span class="badge bg-info text-dark" style="font-size: 0.7em;">{{ set.positioning }}</span>{% endif %}
+                                            {% if set.modification %}<span class="badge bg-warning text-dark" style="font-size: 0.7em;">{{ set.modification }}</span>{% endif %}
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center">
+                                        {{ set.reps|default:"-" }} / <span class="text-muted">{{ set.reps_target|default:"-" }}</span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        {{ set.weight|floatformat:1|default:"-" }} / <span class="text-muted">{{ set.weight_target|floatformat:1|default:"-" }}</span>
+                                    </td>
+
+                                    <td class="text-center small">
+                                        {% if set.distance or set.distance_target %}
+                                            <div>🏃 {{ set.distance|default:"-" }} / {{ set.distance_target|default:"-" }}</div>
+                                        {% endif %}
+                                        {% if set.duration or set.duration_target %}
+                                            <div>⏱️ {{ set.duration|default:"-" }} / {{ set.duration_target|default:"-" }}</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted fst-italic py-3">No sets logged for this session.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

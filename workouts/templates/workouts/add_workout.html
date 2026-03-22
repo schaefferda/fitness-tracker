@@ -24,8 +24,45 @@
 
                     <div id="formset-container">
                         {% for set_form in formset %}
-                            <div class="set-form bg-light p-3 border rounded mb-3">
-                                {{ set_form|crispy }}
+                            <div class="set-form card mb-4 border-secondary shadow-sm">
+                                <div class="card-body p-3">
+
+                                    {% for hidden in set_form.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
+
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-8 col-md-9">
+                                            <div class="mb-0">{{ set_form.exercise|as_crispy_field }}</div>
+                                        </div>
+<!--                                        <div class="col-4 col-md-3 text-end">-->
+<!--                                            {% if formset.can_delete %}-->
+<!--                                                <div class="mb-0">{{ set_form.DELETE|as_crispy_field }}</div>-->
+<!--                                            {% endif %}-->
+<!--                                        </div>-->
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6 col-md-3">{{ set_form.reps|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.reps_target|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.weight|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.weight_target|as_crispy_field }}</div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6 col-md-3">{{ set_form.distance|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.distance_target|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.duration|as_crispy_field }}</div>
+                                        <div class="col-6 col-md-3">{{ set_form.duration_target|as_crispy_field }}</div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-md-4">{{ set_form.equipment|as_crispy_field }}</div>
+                                        <div class="col-md-4">{{ set_form.positioning|as_crispy_field }}</div>
+                                        <div class="col-md-4">{{ set_form.modification|as_crispy_field }}</div>
+                                    </div>
+
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
