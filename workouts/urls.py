@@ -11,8 +11,9 @@ urlpatterns = [
     path('delete/<int:pk>/', views.WorkoutDeleteView.as_view(), name='delete_workout'),
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
     path('exercise/add/', views.ExerciseCreateView.as_view(), name='add_exercise'),
+    path('settings/', views.UserSettingsView.as_view(), name='settings'),
 
-    # Auth views remain the same
+    # Auth views
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='workouts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),

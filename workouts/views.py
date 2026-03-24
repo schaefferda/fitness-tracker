@@ -2,33 +2,17 @@ import json
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import WorkoutSession, Exercise
-from .forms import WorkoutForm, WorkoutSetFormSet, ExerciseForm
+from .forms import ExerciseForm, ProfileForm, UserForm, WorkoutForm, WorkoutSetFormSet
 
 
-class WorkoutListView(LoginRequiredMixin, ListView):
-    model = WorkoutSession
-    template_name = 'workouts/workout_list.html'
-    context_object_name = 'workouts'
-    paginate_by = 5  # CBVs handle pagination automatically!
-
-    def get_queryset(self):
-        # Security check: you can only view details of your own workouts
-        return WorkoutSession.objects.filter(user=self.request.user).order_by('-date')
-
-
-class WorkoutDetailView(LoginRequiredMixin, DetailView):
-    model = WorkoutSession
-    template_name = 'workouts/workout_detail.html'
-    context_object_name = 'workout'
-
-    def get_queryset(self):
-        return WorkoutSession.objects.filter(user=self.request.user)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -47,15 +31,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class WorkoutDeleteView(LoginRequiredMixin, DeleteView):
-    model = WorkoutSession
-    template_name = 'workouts/confirm_delete.html'
-    success_url = reverse_lazy('workout_list')
-
-    def get_queryset(self):
-        return WorkoutSession.objects.filter(user=self.request.user)
-
-
 class ExerciseCreateView(LoginRequiredMixin, CreateView):
     model = Exercise
     form_class = ExerciseForm
@@ -66,6 +41,39 @@ class ExerciseCreateView(LoginRequiredMixin, CreateView):
         # Attach the logged-in user before saving, making it a "Custom" exercise
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class UserSettingsView(LoginRequiredMixin, View):
+    template_name = 'workouts/settings.html'
+
+    def get(self, request):
+        # Load both forms, pre-filled with the logged-in user's current data
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form
+        })
+
+    def post(self, request):
+        # Catch the submitted data for both forms
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+
+        # If both are valid, save them both to the database
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            # Send a success flash message to the user
+            messages.success(request, 'Your profile has been successfully updated!')
+            return redirect('settings')  # Reload the page
+
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form
+        })
 
 
 class WorkoutCreateView(LoginRequiredMixin, CreateView):
@@ -93,6 +101,35 @@ class WorkoutCreateView(LoginRequiredMixin, CreateView):
             return super().form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class WorkoutDeleteView(LoginRequiredMixin, DeleteView):
+    model = WorkoutSession
+    template_name = 'workouts/confirm_delete.html'
+    success_url = reverse_lazy('workout_list')
+
+    def get_queryset(self):
+        return WorkoutSession.objects.filter(user=self.request.user)
+
+
+class WorkoutDetailView(LoginRequiredMixin, DetailView):
+    model = WorkoutSession
+    template_name = 'workouts/workout_detail.html'
+    context_object_name = 'workout'
+
+    def get_queryset(self):
+        return WorkoutSession.objects.filter(user=self.request.user)
+
+
+class WorkoutListView(LoginRequiredMixin, ListView):
+    model = WorkoutSession
+    template_name = 'workouts/workout_list.html'
+    context_object_name = 'workouts'
+    paginate_by = 5  # CBVs handle pagination automatically!
+
+    def get_queryset(self):
+        # Security check: you can only view details of your own workouts
+        return WorkoutSession.objects.filter(user=self.request.user).order_by('-date')
 
 
 class WorkoutUpdateView(LoginRequiredMixin, UpdateView):

@@ -1,7 +1,8 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.forms import inlineformset_factory
-from .models import Exercise, WorkoutSession, WorkoutSet
+from .models import Exercise, Profile, WorkoutSession, WorkoutSet
 
 class WorkoutForm(forms.ModelForm):
     class Meta:
@@ -25,6 +26,18 @@ class ExerciseForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['age', 'gender', 'height', 'weight']
 
 
 class WorkoutSetForm(forms.ModelForm):
